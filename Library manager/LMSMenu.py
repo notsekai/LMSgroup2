@@ -9,6 +9,7 @@ class MenuWindow:
         self.menuFrame.pack()
 
         self.create_top_frame()
+        self.create_gui()
 
     def create_top_frame(self):
         # Top frame for displaying title and time/date
@@ -16,7 +17,7 @@ class MenuWindow:
         self.topFrame.pack(side=TOP, fill=X)
 
         # Label for displaying title and icon
-        iconImage = PhotoImage(file="icon.png")
+        iconImage = PhotoImage(file="Library manager\\icon.png")
         iconImage = iconImage.subsample(10)  # Adjust the size as needed
         self.topFrameLabel = Label(self.topFrame, text="EARL'S LIBRARY SYSTEM", relief=RAISED, 
                             bg='#e1f8dc', borderwidth=0, image=iconImage, compound=LEFT, font=('Trebuchet MS', 27, 'bold'))
@@ -46,86 +47,85 @@ class MenuWindow:
         # Schedule the update function to run again after 1 second
         self.master.after(1000, self.update)
 
-def create_gui():
-    interface = Tk()  # Creating a Tkinter window
-    interface.title("Earl's Library System")
-    interface.geometry("1200x625+200+200")  # Setting window dimensions
-    interface.iconbitmap('icon.ico')  # Setting window icon
+    def create_gui(self):
+        interface = self.master  # Creating a Tkinter window
+        interface.title("Earl's Library System")
+        interface.geometry("1200x625+200+200")  # Setting window dimensions
+        interface.iconbitmap('Library manager\\icon.ico')  # Setting window icon
 
-    # Read and resize the image using OpenCV
-    image = cv2.imread('library.png')
-    resized_image = cv2.resize(image, (500, 400))  # Adjust the size as needed
+        # Read and resize the image using OpenCV
+        image = cv2.imread('Library manager\\library.png')
+        resized_image = cv2.resize(image, (500, 400))  # Adjust the size as needed
 
-    # Convert the resized image to bytes
-    resized_image_bytes = cv2.imencode('.png', resized_image)[1].tobytes()
+        # Convert the resized image to bytes
+        resized_image_bytes = cv2.imencode('.png', resized_image)[1].tobytes()
 
-    # Create a PhotoImage object from the bytes for displaying the library image
-    libraryImage = PhotoImage(data=resized_image_bytes)
+        # Create a PhotoImage object from the bytes for displaying the library image
+        libraryImage = PhotoImage(data=resized_image_bytes)
 
-    # Create an instance of MenuWindow
-    menu = MenuWindow(interface)
+        ########################################## FRAMES ######################################################
 
-    ########################################## FRAMES ######################################################
+        # Center frame for main content
+        centerFrame = Frame(interface, width=250, height=680, relief=RIDGE, bg="#ffd2b0")
+        centerFrame.pack(side=TOP)
 
-    # Center frame for main content
-    centerFrame = Frame(interface, width=250, height=680, relief=RIDGE, bg="#ffd2b0")
-    centerFrame.pack(side=TOP)
+        # Left frame within center frame
+        centerLeftFrame = Frame(centerFrame, width=900, height=700, bg='#FEF8DD', borderwidth=2, relief=SUNKEN)
+        centerLeftFrame.pack(side=LEFT)
+        centerLeftFrame.pack_propagate(0)  # Prevent resizing
 
-    # Left frame within center frame
-    centerLeftFrame = Frame(centerFrame, width=900, height=700, bg='#FEF8DD', borderwidth=2, relief=SUNKEN)
-    centerLeftFrame.pack(side=LEFT)
-    centerLeftFrame.pack_propagate(0)  # Prevent resizing
+        # Right frame within center frame
+        centerRightFrame = Frame(centerFrame, width=450, height=700, bg='#ffd2b0', borderwidth=1, relief=SUNKEN)
+        centerRightFrame.pack()
 
-    # Right frame within center frame
-    centerRightFrame = Frame(centerFrame, width=450, height=700, bg='#ffd2b0', borderwidth=1, relief=SUNKEN)
-    centerRightFrame.pack()
+        # Label for displaying the library image
+        centerLeftFrameLabel = Label(centerLeftFrame, image=libraryImage)
+        centerLeftFrameLabel.pack(side=BOTTOM, anchor=SE, padx=20, pady=7)
 
-    # Label for displaying the library image
-    centerLeftFrameLabel = Label(centerLeftFrame, image=libraryImage)
-    centerLeftFrameLabel.pack(side=BOTTOM, anchor=SE, padx=20, pady=7)
+        # Load and resize the user image
+        userImage = PhotoImage(file='Library manager\\user.png')
+        userImage = userImage.subsample(2)  # Reduce the size
 
-    # Load and resize the user image
-    userImage = PhotoImage(file='user.png')
-    userImage = userImage.subsample(2)  # Reduce the size
-
-    # Label for displaying the user image and information
-    centerRightFrameLabel = Label(centerRightFrame, image=userImage, compound=TOP, text="ADMIN", 
+        # Label for displaying the user image and information
+        centerRightFrameLabel = Label(centerRightFrame, image=userImage, compound=TOP, text="ADMIN", 
                                     font=('Trebuchet MS', 40 , 'bold'), padx=10, pady=10, bg="#ffd2b0", border=0)
-    centerRightFrameLabel.pack()
+        centerRightFrameLabel.pack()
 
-    # Labels for displaying user information
-    centerRightFrameLabel = Label(centerRightFrame, text="Luke Gabriel Arrieta\nSTAFF ID: 897-864-78", 
+        # Labels for displaying user information
+        centerRightFrameLabel = Label(centerRightFrame, text="Luke Gabriel Arrieta\nSTAFF ID: 897-864-78", 
                                     font=('Trebuchet MS', 18 , 'bold'), padx=10, pady=10, bg="#ffd2b0", border=0)
-    centerRightFrameLabel.pack()
+        centerRightFrameLabel.pack()
 
-    centerRightFrameLabel = Label(centerRightFrame, text="\n\nWWVSU ID: M03471\nStatus: ACTIVE", font=('Trebuchet MS', 15 , 'bold'), padx=10, pady=2, bg="#ffd2b0", border=0)
-    centerRightFrameLabel.pack()
+        centerRightFrameLabel = Label(centerRightFrame, text="\n\nWVSU ID: M03471\nStatus: ACTIVE", font=('Trebuchet MS', 15 , 'bold'), padx=10, pady=2, bg="#ffd2b0", border=0)
+        centerRightFrameLabel.pack()
 
-    ###################################### SQUARE DISPLAYS ###################################
+        ###################################### SQUARE DISPLAYS ###################################
 
-    # Frames for displaying various statistics
-    frameTotalBooks = Frame (centerLeftFrame, bg='#EEDD82')
-    frameTotalBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
+        # Frames for displaying various statistics
+        frameTotalBooks = Frame (centerLeftFrame, bg='#EEDD82')
+        frameTotalBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
-    # Label for displaying total number of books
-    totalBooksBox = Label (frameTotalBooks, text=" Total Books: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
-    totalBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+        # Label for displaying total number of books
+        totalBooksBox = Label (frameTotalBooks, text=" Total Books: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
 
-    frameTotalAuthors = Frame (centerLeftFrame, bg='#EEDD82')
-    frameTotalAuthors.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
+        frameTotalAuthors = Frame (centerLeftFrame, bg='#EEDD82')
+        frameTotalAuthors.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
-    # Label for displaying total number of authors
-    totalAuthorsBox = Label (frameTotalAuthors, text=" Total Authors: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
-    totalAuthorsBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+        # Label for displaying total number of authors
+        totalAuthorsBox = Label (frameTotalAuthors, text=" Total Authors: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalAuthorsBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
 
-    frameAvBooks = Frame (centerLeftFrame, bg='#EEDD82')
-    frameAvBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
+        frameAvBooks = Frame (centerLeftFrame, bg='#EEDD82')
+        frameAvBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
-    # Label for displaying total number of available books
-    totalAvBooksBox = Label (frameAvBooks, text=" Total Available Books: ", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 13, 'bold'))
-    totalAvBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+        # Label for displaying total number of available books
+        totalAvBooksBox = Label (frameAvBooks, text=" Total Available Books: ", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 13, 'bold'))
+        totalAvBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
 
-    interface.mainloop()  # Start the Tkinter event loop
+        interface.mainloop()  # Start the Tkinter event loop
 
 if __name__ == "__main__":
-    create_gui()
+    root = Tk()
+    menu = MenuWindow(root)
+    root.mainloop()

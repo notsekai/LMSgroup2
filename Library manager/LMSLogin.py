@@ -4,7 +4,7 @@ from tkinter import messagebox
 class LoginBackend:
     def check(self, username, password):
         # Assuming a password check is required
-        if username == "Luke Gabriel" and password == "Arrieta":
+        if username == "ADMIN" and password == "12345":
             return True
         else:
             return False
