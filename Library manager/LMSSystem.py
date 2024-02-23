@@ -3,12 +3,12 @@ from tkinter import messagebox
 import time
 import json
 import cv2
-from LMSMenu import MainWindow
+from LMSMenu import MenuWindow
 from LMSLogin import LoginBackend, Login
 
 ################# FUNCTIONS ###############
 def openLMSMenu():
-    LMSMenu = MainWindow()
+    LMSMenu = MenuWindow()
     LMSMenu.run()
 
 
@@ -105,13 +105,5 @@ entry_BookNum.grid(row=3,column=1, padx=20, pady=20)
 
 ButtonSubmit = Button(frameRight,text="Submit", height=2, width=10)
 ButtonSubmit.grid(row=6,columnspan=2, pady=0, sticky=S)
-
-
-
-
-
-
-
-
 
 m_window.mainloop()
