@@ -1,6 +1,7 @@
 from tkinter import *
 import cv2
-from time import *
+from time import strftime
+import json
 
 class MenuWindow:
     def __init__(self, master):
@@ -9,6 +10,7 @@ class MenuWindow:
         self.menuFrame.pack()
 
         self.create_top_frame()
+        self.load_data_from_json()
         self.create_gui()
 
     def create_top_frame(self):
@@ -35,6 +37,16 @@ class MenuWindow:
         self.dateTopFrameLabel.pack(side=RIGHT, padx= 20)
 
         self.update()  # Start updating time and date
+
+    def load_data_from_json(self):
+        # Load data from JSON file
+        with open('library_data.json', 'r') as file:
+            self.data = json.load(file)
+
+    def update_json_file(self):
+        # Update JSON file with current data
+        with open('library_data.json', 'w') as file:
+            json.dump(self.data, file, indent=4)
 
     def update(self):
         # Update the time label with the current time
@@ -106,31 +118,44 @@ class MenuWindow:
         frameTotalBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Label for displaying total number of books
-        totalBooksBox = Label (frameTotalBooks, text=" Total Books: ", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
+        totalBooks = len(self.data)
+        totalBooksBox = Label (frameTotalBooks, text=f" Total Books: {totalBooks}", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
         totalBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
         
         # Frame for displaying total number of authors
         frameTotalAuthors = Frame (centerLeftFrame, bg='#EEDD82')
         frameTotalAuthors.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
+        # Counting the number of unique authors
+        authors = set()
+        for book in self.data.values():
+            authors.add(book['author'])
+        totalAuthors = len(authors)
+
         # Label for displaying total number of authors
-        totalAuthorsBox = Label (frameTotalAuthors, text=" Total Authors: ", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
+        totalAuthorsBox = Label (frameTotalAuthors, text=f" Total Authors: {totalAuthors}", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
         totalAuthorsBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+
+        # Counting the number of available books
+        totalAvailableBooks = sum(1 for book in self.data.values() if book['available'])
 
         # Frame for displaying total available books
         frameAvBooks = Frame (centerLeftFrame, bg='#EEDD82')
         frameAvBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Label for displaying total number of available books
-        totalAvBooksBox = Label (frameAvBooks, text=" Total Available\nBooks: ", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 16, 'bold'))
+        totalAvBooksBox = Label (frameAvBooks, text=f" Total Available\nBooks: {totalAvailableBooks}", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 16, 'bold'))
         totalAvBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+
+        # Counting the number of checked out books
+        totalCheckedOutBooks = sum(1 for book in self.data.values() if not book['available'])
 
         # Frame for displaying total number of books
         frameCheckoutBooks = Frame (centerLeftFrame, bg='#EEDD82')
         frameCheckoutBooks.place(x=20, y=150,)
 
         # Label for displaying total number of available books
-        totalCheckoutBooks = Label (frameCheckoutBooks, text=" Total Checked Out\nBooks: ", bg='#f9ba8e', width=18, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalCheckoutBooks = Label (frameCheckoutBooks, text=f" Total Checked Out\nBooks: {totalCheckedOutBooks}", bg='#f9ba8e', width=18, height=3, font=('Trebuchet MS', 16, 'bold'))
         totalCheckoutBooks.pack(padx=10, pady=10)
 
         # Frame for displaying Notes / Reminders for Today
@@ -144,7 +169,6 @@ class MenuWindow:
 
         reminderText = Text (reminderFrame, width=27, height=10, font=('Trebuchet MS', 10, 'bold'))
         reminderText.pack(padx=5, pady=10)
-
 
         interface.mainloop()  # Start the Tkinter event loop
 

@@ -1,1 +1,2 @@
 
+timeTopFrameLabel.pack(side=RIGHT)
