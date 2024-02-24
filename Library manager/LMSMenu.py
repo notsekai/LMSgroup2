@@ -55,7 +55,7 @@ class MenuWindow:
 
         # Read and resize the image using OpenCV
         image = cv2.imread('Library manager\\library.png')
-        resized_image = cv2.resize(image, (500, 400))  # Adjust the size as needed
+        resized_image = cv2.resize(image, (570, 400))  # Adjust the size as needed
 
         # Convert the resized image to bytes
         resized_image_bytes = cv2.imencode('.png', resized_image)[1].tobytes()
@@ -101,27 +101,50 @@ class MenuWindow:
 
         ###################################### SQUARE DISPLAYS ###################################
 
-        # Frames for displaying various statistics
+        # Frames for label of total books
         frameTotalBooks = Frame (centerLeftFrame, bg='#EEDD82')
         frameTotalBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Label for displaying total number of books
-        totalBooksBox = Label (frameTotalBooks, text=" Total Books: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalBooksBox = Label (frameTotalBooks, text=" Total Books: ", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
         totalBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
-
+        
+        # Frame for displaying total number of authors
         frameTotalAuthors = Frame (centerLeftFrame, bg='#EEDD82')
         frameTotalAuthors.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Label for displaying total number of authors
-        totalAuthorsBox = Label (frameTotalAuthors, text=" Total Authors: ", bg='#f9ba8e', width=14, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalAuthorsBox = Label (frameTotalAuthors, text=" Total Authors: ", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
         totalAuthorsBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
 
+        # Frame for displaying total available books
         frameAvBooks = Frame (centerLeftFrame, bg='#EEDD82')
         frameAvBooks.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Label for displaying total number of available books
-        totalAvBooksBox = Label (frameAvBooks, text=" Total Available Books: ", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 13, 'bold'))
+        totalAvBooksBox = Label (frameAvBooks, text=" Total Available\nBooks: ", bg='#f9ba8e', width=19, height=4, font=('Trebuchet MS', 16, 'bold'))
         totalAvBooksBox.pack(side=RIGHT, anchor=NE, padx=10, pady=10)
+
+        # Frame for displaying total number of books
+        frameCheckoutBooks = Frame (centerLeftFrame, bg='#EEDD82')
+        frameCheckoutBooks.place(x=20, y=150,)
+
+        # Label for displaying total number of available books
+        totalCheckoutBooks = Label (frameCheckoutBooks, text=" Total Checked Out\nBooks: ", bg='#f9ba8e', width=18, height=3, font=('Trebuchet MS', 16, 'bold'))
+        totalCheckoutBooks.pack(padx=10, pady=10)
+
+        # Frame for displaying Notes / Reminders for Today
+        reminderFrame = Frame (centerLeftFrame, bg='#EEDD82')
+        reminderFrame.place(x=20, y=290)
+
+        # Label for displaying total number of available books
+        reminderLabel = Label (reminderFrame, text=" Reminder/Notes for Today ", bg='#EEDD82', fg='black', width=22, height=1, font=('Trebuchet MS', 13, 'bold'))
+        reminderLabel.pack(padx=5, pady=10)
+        reminderLabel.config(state=NORMAL)
+
+        reminderText = Text (reminderFrame, width=27, height=10, font=('Trebuchet MS', 10, 'bold'))
+        reminderText.pack(padx=5, pady=10)
+
 
         interface.mainloop()  # Start the Tkinter event loop
 
