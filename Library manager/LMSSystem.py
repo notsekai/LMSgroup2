@@ -80,7 +80,7 @@ def add_book_callback():
     title = entry_BookTitle.get()
     author = entryAuthor.get()
     book_id = entryID.get()
-    borrower_name = entry_BookNum.get()  # Changed to borrower name
+    borrower_name = entry_BorrowerName.get()  # Changed to borrower name
     if title and author and book_id and borrower_name:
         library.add_book(title, author, book_id, borrower_name)  # Pass borrower name
         populate_listbox()  # Update the listbox after adding a new book
@@ -146,16 +146,9 @@ def loginBackend(login_window):
 
 def populate_listbox():
     listbox_books.delete(0, END)  # Clear the listbox
+    # Format the book information and insert into the listbox
     for title, details in library.books.items():
-        if not details['available']:
-            # Display return date if book is checked out
-            borrower_name = details.get('borrower_name', 'XXXX')  # Get borrower's name or default to 'XXXX'
-            book_info = f"Title: {title} | Author: {details['author']} | Book ID: {details['book_id']} | Borrower Name: {borrower_name} | Due Date: {details['due_date']} | Status: Checked Out"
-        else:
-            # Display status as available if book is not checked out
-            book_info = f"Title: {title} | Author: {details['author']} | Book ID: {details['book_id']} | Status: Available"
-            # Exclude borrower's name if book is available
-            borrower_name = ''  # Empty string if book is available
+        book_info = f"{title:<30} | {details['book_id']:<30} | {details['author']}"
         listbox_books.insert(END, book_info)
 
 def populate_listbox_sort_by_id():
@@ -186,16 +179,41 @@ m_window.geometry("1250x750")
 m_window.title("Earl's Library Management System")
 m_window.config(bg="#FFD8B1")
 
-# Initializing Images
+# Initializing Images using OpenCV
+addBook_cv_image = cv2.imread('Library manager\\addbook.png')
+removeBook_cv_image = cv2.imread('Library manager\\removeBook.png')
+checkoutBook_cv_image = cv2.imread('Library manager\\checkout.png')
+displayBook_cv_image = cv2.imread('Library manager\\displaybook.png')
+overdueBook_cv_image = cv2.imread('Library manager\\overdue.png')
+returnBook_cv_image = cv2.imread('Library manager\\returnbook.png')
+menu_cv_image = cv2.imread('Library manager\\menu.png')
 
-addBook_image = PhotoImage(file='Library manager\\addbook.png')
-removeBook_image = PhotoImage(file='Library manager\\removeBook.png')
-checkoutbook_image = PhotoImage(file='Library manager\\checkout.png')
-displayBook_image = PhotoImage(file='Library manager\\displaybook.png')
-overdueBook_image = PhotoImage(file='Library manager\\overdue.png')
-returnBook_image = PhotoImage(file='Library manager\\returnbook.png')
-menu_image = PhotoImage(file='Library manager\\menu.png')
+# Resize images using OpenCV
+addBook_resized_image = cv2.resize(addBook_cv_image, (50, 50)) 
+removeBook_resized_image = cv2.resize(removeBook_cv_image, (50, 50)) 
+checkoutBook_resized_image = cv2.resize(checkoutBook_cv_image, (50, 50)) 
+displayBook_resized_image = cv2.resize(displayBook_cv_image, (50, 50)) 
+overdueBook_resized_image = cv2.resize(overdueBook_cv_image, (50, 50)) 
+returnBook_resized_image = cv2.resize(returnBook_cv_image, (50, 50)) 
+menu_resized_image = cv2.resize(menu_cv_image, (50, 50)) 
 
+# Convert images to bytes using OpenCV
+addBook_resized_image_bytes = cv2.imencode('.png', addBook_resized_image)[1].tobytes()
+removeBook_resized_image_bytes = cv2.imencode('.png', removeBook_resized_image)[1].tobytes()
+checkoutBook_resized_image_bytes = cv2.imencode('.png', checkoutBook_resized_image)[1].tobytes()
+displayBook_resized_image_bytes = cv2.imencode('.png', displayBook_resized_image)[1].tobytes()
+overdueBook_resized_image_bytes = cv2.imencode('.png', overdueBook_resized_image)[1].tobytes()
+returnBook_resized_image_bytes = cv2.imencode('.png', returnBook_resized_image)[1].tobytes()
+menu_resized_image_bytes = cv2.imencode('.png', menu_resized_image)[1].tobytes()
+
+# Create PhotoImage objects from the bytes
+addBook_photo_image = PhotoImage(data=addBook_resized_image_bytes)
+removeBook_photo_image = PhotoImage(data=removeBook_resized_image_bytes)
+checkoutBook_photo_image = PhotoImage(data=checkoutBook_resized_image_bytes)
+displayBook_photo_image = PhotoImage(data=displayBook_resized_image_bytes)
+overdueBook_photo_image = PhotoImage(data=overdueBook_resized_image_bytes)
+returnBook_photo_image = PhotoImage(data=returnBook_resized_image_bytes)
+menu_photo_image = PhotoImage(data=menu_resized_image_bytes)
 
 # Button frames
 frameButton1 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
@@ -220,33 +238,26 @@ frameButton7 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=
 frameButton7.place(relx=0.02, rely=0.87)
 
 # Buttons
-AddBookbutton = Button(frameButton1, command=add_book_callback, bg="#f6a192", height=2, width=28, text="Add Book", font=('Courier New', 14, 'bold'), 
-                       fg="white", relief=SUNKEN,)
-AddBookbutton.grid(row=0, column=0, padx=10, pady=10)
+AddBookbutton = Button(frameButton1, text="  Add Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=add_book_callback, bg="#f6a192", height=55, width=320, image=addBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+AddBookbutton.pack(fill=BOTH, expand=True)
 
-RemoveBookbutton = Button(frameButton2, command=remove_book_callback, bg="#f6a192", height=2, width=28, text="Remove Book", font=('Courier New', 14, 'bold'), 
-                          fg="white", relief=SUNKEN,)
-RemoveBookbutton.grid(row=0, column=0, padx=10, pady=10)
+RemoveBookbutton = Button(frameButton2, text="  Remove Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=remove_book_callback, bg="#f6a192", height=55, width=320, image=removeBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+RemoveBookbutton.pack(fill=BOTH, expand=True)
 
-CheckoutBookbutton = Button(frameButton3, command=checkout_book_callback, bg="#f6a192", height=2, width=28, text="Checkout Book", font=('Courier New', 14, 'bold'), 
-                            fg="white", relief=SUNKEN,)
-CheckoutBookbutton.grid(row=0, column=0, padx=10, pady=10)
+CheckoutBookbutton = Button(frameButton3, text="  Check Out", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=checkout_book_callback, bg="#f6a192", height=55, width=320, image=checkoutBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+CheckoutBookbutton.pack(fill=BOTH, expand=True)
 
-ReturningBooksbutton = Button(frameButton4, command=return_book_callback, bg="#f6a192", height=2, width=28, text="Returning Books", font=('Courier New', 14, 'bold'), 
-                              fg="white", relief=SUNKEN,)
-ReturningBooksbutton.grid(row=0, column=0, padx=10, pady=10)
+ReturningBooksbutton = Button(frameButton4, text="  Return Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=return_book_callback, bg="#f6a192", height=55, width=320, image=returnBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+ReturningBooksbutton.pack(fill=BOTH, expand=True)
 
-CheckOverdueBooksbutton = Button(frameButton5, command=check_overdue_books_callback, bg="#f6a192", height=2, width=28, text="Check Overdue Books", font=('Courier New', 14, 'bold'),
-                                  fg="white", relief=SUNKEN,)
-CheckOverdueBooksbutton.grid(row=0, column=0, padx=10, pady=10)
+CheckOverdueBooksbutton = Button(frameButton5, text="  Overdue Books", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=check_overdue_books_callback, bg="#f6a192", height=55, width=320, image=overdueBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+CheckOverdueBooksbutton.pack(fill=BOTH, expand=True)
 
-DisplayAllBooksbutton = Button(frameButton6, command=display_all_books_callback, bg="#f6a192", height=2, width=28, text="Display All Books", font=('Courier New', 14, 'bold'), 
-                               fg="white", relief=SUNKEN,)
-DisplayAllBooksbutton.grid(row=0, column=0, padx=10, pady=10)
+DisplayAllBooksbutton = Button(frameButton6, text="  Display all Book", font=('Trebuchet MS', 20 , 'bold'),fg='white', command=display_all_books_callback, bg="#f6a192", height=55, width=320, image=displayBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+DisplayAllBooksbutton.pack(fill=BOTH, expand=True)
 
-MenuButton = Button(frameButton7, command=lambda: openLMSMenu(m_window), bg="#f6a192", height=2, width=28, text="Menu", font=('Courier New', 14, 'bold'), 
-                    fg="white", relief=SUNKEN,)
-MenuButton.grid(row=0, column=0, padx=10, pady=10)
+MenuButton = Button(frameButton7, text="Menu", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=lambda: openLMSMenu(m_window), bg="#f6a192", height=55, width=320, image=menu_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+MenuButton.pack(fill=BOTH, expand=True)
 
 # Frames
 frameRight = Frame(m_window, bg="#9bedff", width=90, height=200 , padx=15, pady= 10)
@@ -291,4 +302,3 @@ scrollbar.config(command=listbox_books.yview)
 listbox_books.config(yscrollcommand=scrollbar.set)
 
 m_window.mainloop()
-
