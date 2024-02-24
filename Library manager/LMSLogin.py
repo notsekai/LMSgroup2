@@ -1,10 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
+from LMSMenu import MenuWindow
 
 class LoginBackend:
     def check(self, username, password):
         # Assuming a password check is required
-        if username == "ADMIN" and password == "12345":
+        if username == "Luke Gabriel" and password == "Arrieta":
             return True
         else:
             return False
