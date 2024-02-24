@@ -17,7 +17,7 @@ class MenuWindow:
         self.topFrame.pack(side=TOP, fill=X)
 
         # Label for displaying title and icon
-        iconImage = PhotoImage(file="Library manager\\icon.png")
+        iconImage = PhotoImage(file='Library Manager\\icon.png')
         iconImage = iconImage.subsample(10)  # Adjust the size as needed
         self.topFrameLabel = Label(self.topFrame, text="EARL'S LIBRARY SYSTEM", relief=RAISED, 
                             bg='#e1f8dc', borderwidth=0, image=iconImage, compound=LEFT, font=('Trebuchet MS', 27, 'bold'))
@@ -70,7 +70,7 @@ class MenuWindow:
         centerFrame.pack(side=TOP)
 
         # Left frame within center frame
-        centerLeftFrame = Frame(centerFrame, width=900, height=700, bg='#FEF8DD', borderwidth=2, relief=SUNKEN)
+        centerLeftFrame = Frame(centerFrame, width=900, height=560, bg='#FEF8DD', borderwidth=2, relief=SUNKEN)
         centerLeftFrame.pack(side=LEFT)
         centerLeftFrame.pack_propagate(0)  # Prevent resizing
 
@@ -96,7 +96,7 @@ class MenuWindow:
                                     font=('Trebuchet MS', 18 , 'bold'), padx=10, pady=10, bg="#ffd2b0", border=0)
         centerRightFrameLabel.pack()
 
-        centerRightFrameLabel = Label(centerRightFrame, text="\n\nWVSU ID: M03471\nStatus: ACTIVE", font=('Trebuchet MS', 15 , 'bold'), padx=10, pady=2, bg="#ffd2b0", border=0)
+        centerRightFrameLabel = Label(centerRightFrame, text="\n\n\nWVSU ID: M03471\nStatus: ACTIVE", font=('Trebuchet MS', 15 , 'bold'), padx=10, pady=2, bg="#ffd2b0", border=0)
         centerRightFrameLabel.pack()
 
         ###################################### SQUARE DISPLAYS ###################################
