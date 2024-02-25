@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from LMSMenu import MenuWindow
-from LMSLogin import LoginBackend, Login
+from LMSLogin import Login
 import datetime
 import json
 import cv2
@@ -18,9 +18,9 @@ class Library:
         with open('library_data.json', 'w') as file:
             json.dump(self.books, file, indent=4)
 
-    def add_book(self, title, author, book_id, borrower_name):
+    def add_book(self, title, author, book_id):
         if title not in self.books:
-            self.books[title] = {'author': author, 'book_id': book_id, 'borrower_name': borrower_name, 'available': True}
+            self.books[title] = {'author': author, 'book_id': book_id, 'borrower_name': 'N/A', 'available': True}
             self.save_database()
             messagebox.showinfo("Success", f"Book '{title}' by {author} added successfully!")
         else:
@@ -89,10 +89,13 @@ class Library:
             if not details['available'] and datetime.datetime.strptime(details['due_date'], '%Y-%m-%d') < today:
                 overdue_books.append(title)
         if overdue_books:
-            messagebox.showinfo("Overdue Books", "Overdue Books:\n" + "\n".join(overdue_books))
+            messagebox.showinfo("Overdue Books", "The following books are overdue:\n" + "\n".join(overdue_books))
+            for title in overdue_books:
+                fine = self.calculate_fine(title)
+                borrower_name = self.books[title]['borrower_name']
+                messagebox.showinfo(f"Overdue Fine for {borrower_name}", f"You have an overdue fine of ${fine} for book '{title}'.")
         else:
             messagebox.showinfo("No Overdue Books", "No books are currently overdue.")
-
 
 def populate_listbox():
     listbox_books.delete(0, END)  # Clear the listbox
@@ -118,12 +121,11 @@ def add_book_callback():
     title = entry_BookTitle.get()
     author = entryAuthor.get()
     book_id = entryID.get()
-    borrower_name = entry_BorrowerName.get()  # Changed to borrower name
-    if title and author and book_id and borrower_name:
-        library.add_book(title, author, book_id, borrower_name)  # Pass borrower name
+    if title and author and book_id:
+        library.add_book(title, author, book_id)
         populate_listbox()  # Update the listbox after adding a new book
     else:
-        messagebox.showerror("Error", "Please enter all fields: title, author, book ID, and borrower name.")
+        messagebox.showerror("Error", "Please enter all fields: title, author, and book ID.")
 
 def checkout_book_callback():
     title = entry_BookTitle.get()
@@ -195,6 +197,12 @@ def populate_listbox_sort_by_id():
         # Format book details into a table-like manner
         book_info = f"Title: {title.ljust(30)} | Author: {details['author'].ljust(20)} | Book ID: {details['book_id'].ljust(10)} | Borrower Name: {borrower_name.ljust(20)} | Status: {'Available' if details['available'] else 'Checked Out'}"
         listbox_books.insert(END, book_info)
+
+def calculate_fine(self, title):
+    if self.is_overdue(title):
+        days_overdue = (datetime.datetime.now() - datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')).days
+        return 1.5 * days_overdue
+    return 0
 
 def main():
     # Create a new Tkinter window for login

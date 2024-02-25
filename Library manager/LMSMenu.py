@@ -89,7 +89,7 @@ class MenuWindow:
         # Right frame within center frame
         centerRightFrame = Frame(centerFrame, width=450, height=700, bg='#ffd2b0', borderwidth=1, relief=SUNKEN)
         centerRightFrame.pack()
-
+        
         # Label for displaying the library image
         centerLeftFrameLabel = Label(centerLeftFrame, image=libraryImage)
         centerLeftFrameLabel.pack(side=BOTTOM, anchor=SE, padx=20, pady=7)

@@ -2,8 +2,14 @@
     "Mein Kampf": {
         "author": "Hitler",
         "book_id": "1",
-        "borrower_name": "Stalin",
+        "borrower_name": "Twiceee",
         "available": false,
         "due_date": "2024-03-10"
+    },
+    "Mein Kampf 2": {
+        "author": "Hitler",
+        "book_id": "2",
+        "borrower_name": "N/A",
+        "available": true
     }
 }
