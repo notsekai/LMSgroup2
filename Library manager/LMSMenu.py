@@ -19,10 +19,11 @@ class MenuWindow:
         self.topFrame.pack(side=TOP, fill=X)
 
         # Label for displaying title and icon
-        iconImage = PhotoImage(file='Library Manager\\icon.png')
-        iconImage = iconImage.subsample(10)  # Adjust the size as needed
-        self.topFrameLabel = Label(self.topFrame, text="EARL'S LIBRARY SYSTEM", relief=RAISED, 
-                            bg='#e1f8dc', borderwidth=0, image=iconImage, compound=LEFT, font=('Trebuchet MS', 27, 'bold'))
+        icon_image = PhotoImage(file='icon.png')
+        icon_image = icon_image.subsample(10)  # Adjust the size as needed
+        self.topFrameLabel = Label(self.topFrame, text=" EARL'S LIBRARY SYSTEM", relief=RAISED, 
+                            bg='#e1f8dc', borderwidth=0, image=icon_image, compound=LEFT, font=('Trebuchet MS', 27, 'bold'))
+        self.topFrameLabel.image = icon_image  # Keep a reference to the image
         self.topFrameLabel.pack(side=LEFT)
 
         # Label for displaying "Dashboard" text
@@ -89,7 +90,7 @@ class MenuWindow:
         # Right frame within center frame
         centerRightFrame = Frame(centerFrame, width=450, height=700, bg='#ffd2b0', borderwidth=1, relief=SUNKEN)
         centerRightFrame.pack()
-        
+
         # Label for displaying the library image
         centerLeftFrameLabel = Label(centerLeftFrame, image=libraryImage)
         centerLeftFrameLabel.pack(side=BOTTOM, anchor=SE, padx=20, pady=7)
