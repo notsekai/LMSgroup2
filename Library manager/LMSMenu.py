@@ -1,6 +1,6 @@
 from tkinter import *
 import cv2
-from time import strftime
+from time import *
 import json
 
 class MenuWindow:
