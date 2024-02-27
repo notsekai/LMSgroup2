@@ -99,18 +99,6 @@ class Library:
 
 def populate_listbox():
     listbox_books.delete(0, END)  # Clear the listbox
-    
-    # Predefined titles
-    predefined_titles = ["TITLE", "AUTHOR", "BOOK ID"]
-    title_info = f"{predefined_titles[0]:<30} | {predefined_titles[1]:<30} | {predefined_titles[2]}"
-    listbox_books.insert(END, title_info)
-
-    # Predefined values for title, author, and book id
-    predefined_values = ["Predefined Title", "Predefined Author", "Predefined Book ID"]
-    
-    # Insert predefined values into the listbox
-    predefined_info = f"{predefined_values[0]:<30} | {predefined_values[1]:<30} | {predefined_values[2]}"
-    listbox_books.insert(END, predefined_info)
 
     # Format the book information and insert into the listbox
     for title, details in library.books.items():
@@ -195,7 +183,7 @@ def populate_listbox_sort_by_id():
         # Use get method to handle cases where 'borrower_name' may not be present
         borrower_name = details.get('borrower_name', 'N/A')
         # Format book details into a table-like manner
-        book_info = f"Title: {title.ljust(30)} | Author: {details['author'].ljust(20)} | Book ID: {details['book_id'].ljust(10)} | Borrower Name: {borrower_name.ljust(20)} | Status: {'Available' if details['available'] else 'Checked Out'}"
+        book_info = f"Title: {title.ljust(22)} | Author: {details['author'].ljust(14)} | Book ID: {details['book_id'].ljust(5)} | Borrower Name: {borrower_name.ljust(8)} | Status: {'Available' if details['available'] else 'Checked Out'}"
         listbox_books.insert(END, book_info)
 
 def calculate_fine(self, title):
@@ -221,7 +209,7 @@ if __name__ == "__main__":
 m_window = Tk()
 m_window.geometry("1250x750")
 m_window.title("Earl's Library Management System")
-m_window.config(bg="#FFD8B1")
+m_window.config(bg="#E6CBAE")
 
 # Initializing Images using OpenCV
 addBook_cv_image = cv2.imread('Library manager\\addbook.png')
@@ -260,80 +248,80 @@ returnBook_photo_image = PhotoImage(data=returnBook_resized_image_bytes)
 menu_photo_image = PhotoImage(data=menu_resized_image_bytes)
 
 # Button frames
-frameButton1 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton1 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton1.place(relx=0.02, rely=0.03)
 
-frameButton2 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton2 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton2.place(relx=0.02, rely=0.17)
 
-frameButton3 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton3 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton3.place(relx=0.02, rely=0.31)
 
-frameButton4 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton4 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton4.place(relx=0.02, rely=0.45)
 
-frameButton5 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton5 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton5.place(relx=0.02, rely=0.59)
 
-frameButton6 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton6 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton6.place(relx=0.02, rely=0.73)
 
-frameButton7 = Frame(m_window, bg="#f6a192", width=30, height=100, padx=2, pady=1)
+frameButton7 = Frame(m_window, bg="#544541", width=30, height=100, padx=2, pady=1)
 frameButton7.place(relx=0.02, rely=0.87)
 
 # Buttons
-AddBookbutton = Button(frameButton1, text="  Add Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=add_book_callback, bg="#f6a192", height=55, width=320, image=addBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+AddBookbutton = Button(frameButton1, text="  Add Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=add_book_callback, bg="#aab396", height=55, width=320, image=addBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 AddBookbutton.pack(fill=BOTH, expand=True)
 
-RemoveBookbutton = Button(frameButton2, text="  Remove Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=remove_book_callback, bg="#f6a192", height=55, width=320, image=removeBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+RemoveBookbutton = Button(frameButton2, text="  Remove Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=remove_book_callback, bg="#636e5f", height=55, width=320, image=removeBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 RemoveBookbutton.pack(fill=BOTH, expand=True)
 
-CheckoutBookbutton = Button(frameButton3, text="  Check Out", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=checkout_book_callback, bg="#f6a192", height=55, width=320, image=checkoutBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+CheckoutBookbutton = Button(frameButton3, text="  Check Out", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=checkout_book_callback, bg="#aab396", height=55, width=320, image=checkoutBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 CheckoutBookbutton.pack(fill=BOTH, expand=True)
 
-ReturningBooksbutton = Button(frameButton4, text="  Return Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=return_book_callback, bg="#f6a192", height=55, width=320, image=returnBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+ReturningBooksbutton = Button(frameButton4, text="  Return Book", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=return_book_callback, bg="#636e5f", height=55, width=320, image=returnBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 ReturningBooksbutton.pack(fill=BOTH, expand=True)
 
-CheckOverdueBooksbutton = Button(frameButton5, text="  Overdue Books", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=check_overdue_books_callback, bg="#f6a192", height=55, width=320, image=overdueBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+CheckOverdueBooksbutton = Button(frameButton5, text="  Overdue Books", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=check_overdue_books_callback, bg="#aab396", height=55, width=320, image=overdueBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 CheckOverdueBooksbutton.pack(fill=BOTH, expand=True)
 
-DisplayAllBooksbutton = Button(frameButton6, text="  Display all Book", font=('Trebuchet MS', 20 , 'bold'),fg='white', command=display_all_books_callback, bg="#f6a192", height=55, width=320, image=displayBook_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+DisplayAllBooksbutton = Button(frameButton6, text="  Display all Book", font=('Trebuchet MS', 20 , 'bold'),fg='white', command=display_all_books_callback, bg="#636e5f", height=55, width=320, image=displayBook_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 DisplayAllBooksbutton.pack(fill=BOTH, expand=True)
 
-MenuButton = Button(frameButton7, text="  Menu", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=lambda: openLMSMenu(m_window), bg="#f6a192", height=55, width=320, image=menu_photo_image, compound=LEFT, relief=SUNKEN, anchor='w')
+MenuButton = Button(frameButton7, text="  Menu", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=lambda: openLMSMenu(m_window), bg="#aab396", height=55, width=320, image=menu_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 MenuButton.pack(fill=BOTH, expand=True)
 
 # Frames
-frameRight = Frame(m_window, bg="#9bedff", width=90, height=200 , padx=15, pady= 10)
+frameRight = Frame(m_window, bg='#CBB889', width=90, height=200 , padx=15, pady= 10)
 frameRight.pack(side=RIGHT, anchor=NE, padx=15, pady=20)
 
-ABFrame = Frame(m_window, bg='white', width=845, height=295 ,padx= 10, pady= 10, borderwidth=2)
+ABFrame = Frame(m_window, bg='#f3e9dc', width=845, height=295 ,padx= 10, pady= 10, borderwidth=2)
 ABFrame.place(relx=1.0, rely=1.0, x=-860, y=-457)
 
 # Labels and entries
-label_BookID = Label(frameRight, height=1, width= 12, text="Book ID:", font= ('Helvetica', 15,'bold'), padx=5, pady=10, relief=RAISED)
+label_BookID = Label(frameRight, bg='#b58567', height=1, width= 12, text="Book ID:", font= ('Helvetica', 15,'bold'), padx=5, pady=10, relief=RAISED)
 label_BookID.grid(row=0,column=0)
 
 entryID = Entry(frameRight, width= 52, font=('Helvetica', 14, 'bold'))
 entryID.grid(row=0,column=1, padx= 20, pady=20)
 
-label_Author = Label(frameRight, text = "Author:", height=1, width= 12, font= ('Helvetica', 15,'bold'), padx=5, pady=10, relief=RAISED)
+label_Author = Label(frameRight, bg='#b58567', text = "Author:", height=1, width= 12, font= ('Helvetica', 15,'bold'), padx=5, pady=10, relief=RAISED)
 label_Author.grid(row=1,column=0,padx= 20, pady=20)
 
 entryAuthor= Entry(frameRight, width= 52, font=('Helvetica', 14, 'bold'))
 entryAuthor.grid(row=1,column=1, padx= 20, pady=20)
 
-label_BookTitle = Label(frameRight, height=1, width= 12, text="Book Title:", font= ('Helvetica', 15 ,'bold'), padx=5, pady=10, relief=RAISED)
+label_BookTitle = Label(frameRight, bg='#c68054', height=1, width= 12, text="Book Title:", font= ('Helvetica', 15 ,'bold'), padx=5, pady=10, relief=RAISED)
 label_BookTitle.grid(row=2,column=0, padx= 20, pady=20)
 
 entry_BookTitle = Entry(frameRight, width= 52, font=('Helvetica', 14, 'bold'))
 entry_BookTitle.grid(row=2,column=1, padx= 20, pady=20)
 
 #########################NEW FRAME FOR BORROWER'S NAME#####################
-frameBorrowerName = Frame(m_window, bg="#acddde", width=90, height=200, padx=15, pady= 10)
+frameBorrowerName = Frame(m_window, bg="#CCAE9A", width=90, height=200, padx=15, pady= 10)
 frameBorrowerName.place(relx=1.0, rely=1.0, x=-860, y=-150)
 
-label_BorrowerName = Label(frameBorrowerName, height=1, width= 12, text="Borrower Name:", font= ('Helvetica',15 ,'bold'), padx=5, pady=10, relief=RAISED)
+label_BorrowerName = Label(frameBorrowerName, bg="#C08552", height=1, width= 12, text="Borrower Name:", font= ('Helvetica',15 ,'bold'), padx=5, pady=10, relief=RAISED)
 label_BorrowerName.grid(row=0,column=0, padx= 20, pady=20)
 
 entry_BorrowerName = Entry(frameBorrowerName, width= 52, font=('Helvetica', 14, 'bold'))
