@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 from LMSMenu import MenuWindow
+import cv2
+import sys
 
 class LoginBackend:
     def check(self, username, password):
@@ -15,12 +17,12 @@ class Login:
         self.window = window
         self.login_backend = LoginBackend()
 
-        self.frame = Frame(self.window, bg='Orange', width=700, height=400)
+        self.frame = Frame(self.window, bg='#ede1d2', width=700, height=400)
         self.window.protocol("WM_DELETE_WINDOW", self.close_window)  # Handle close button
 
     def close_window(self):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            self.window.destroy()
+            sys.exit("hello")
 
     def login_admin(self):
         username = self.namee_text.get()
@@ -33,14 +35,15 @@ class Login:
             messagebox.showerror("Login Failed", "Invalid username or password")
 
     def loginfn(self):
-        self.label = Label(self.frame, text='Log In', bg='Orange', font=('Georgia', 36, 'bold'))
+        
+        self.label = Label(self.frame, text='Log In', bg='#6a6f4c', font=('Georgia', 36, 'bold'))
 
-        self.name = Label(self.frame, text='Enter User_Name: ', bg='Orange', font=('Arial', 18, 'bold'))
+        self.name = Label(self.frame, text='Enter User_Name: ', bg='#806044', font=('Arial', 18, 'bold'))
 
         self.namee_text = StringVar()
         self.namee = Entry(self.frame, textvariable=self.namee_text, fg='gray', width=25, font=('Arial', 16, 'bold'))
 
-        self.password1 = Label(self.frame, text='Enter Password : ', bg='Orange', fg='Green',
+        self.password1 = Label(self.frame, text='Enter Password : ', bg='#806044', fg='Green',
                                 font=('Arial', 18, 'bold'))
 
         self.password1e_text = StringVar()
