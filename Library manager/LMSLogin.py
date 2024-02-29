@@ -1,11 +1,42 @@
 from tkinter import *
 from tkinter import messagebox
+from PIL import Image, ImageTk
 from LMSMenu import MenuWindow
+import sys
+import json
 
 class LoginBackend:
+    def __init__(self):
+        self.user_data_file = 'user_data.json'
+        self.load_user_data()
+
+    def load_user_data(self):
+        try:
+            with open(self.user_data_file, 'r') as file:
+                self.user_data = json.load(file)
+        except FileNotFoundError:
+            self.user_data = {}
+
+    def save_user_data(self):
+        with open(self.user_data_file, 'w') as file:
+            json.dump(self.user_data, file, indent=4)
+
+    def register(self, username, password):
+        if not username or not password:
+            messagebox.showerror("Error", "All fields are required.")
+            return False
+
+        if username in self.user_data:
+            messagebox.showerror("Error", "Username already exists.")
+            return False
+
+        self.user_data[username] = password
+        self.save_user_data()
+        messagebox.showinfo("Success", "Registration successful.")
+        return True
+
     def check(self, username, password):
-        # Assuming a password check is required
-        if username == "Luke Gabriel" and password == "Arrieta":
+        if username in self.user_data and self.user_data[username] == password:
             return True
         else:
             return False
@@ -14,71 +45,83 @@ class Login:
     def __init__(self, window):
         self.window = window
         self.login_backend = LoginBackend()
-
-        self.frame = Frame(self.window, bg='Orange', width=700, height=400)
-        self.window.protocol("WM_DELETE_WINDOW", self.close_window)  # Handle close button
+        self.frame = Frame(self.window, width=700, height=400)
+        self.frame.pack()
+        self.window.protocol("WM_DELETE_WINDOW", self.close_window)
 
     def close_window(self):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            self.window.destroy()
+            sys.exit("Exiting application")
+
+    def set_background_image(self, image_path):
+        image = Image.open(image_path)
+        photo = ImageTk.PhotoImage(image)
+        background_label = Label(self.frame, image=photo)
+        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        background_label.image = photo 
+
+    def registerfn(self):
+        username = self.namee_text.get()
+        password = self.password1e_text.get()
+
+        if self.login_backend.register(username, password):
+            self.namee.delete(0, END)
+            self.password1e.delete(0, END)
 
     def login_admin(self):
         username = self.namee_text.get()
         password = self.password1e_text.get()
         if self.login_backend.check(username, password):
             messagebox.showinfo("Login Successful", "Welcome! "+ username)
-            self.window.destroy()  # Terminate the program after successful login
-            openLMSMenu(self.window)  # Call the function to open the other program
+            self.window.destroy()
+            openLMSMenu(self.window)
         else:
             messagebox.showerror("Login Failed", "Invalid username or password")
 
     def loginfn(self):
-        self.label = Label(self.frame, text='Log In', bg='Orange', font=('Georgia', 36, 'bold'))
+        self.set_background_image('Library Manager//bgLogin.jpg')
+        self.label = Label(self.frame, text='LOGIN', bg='White', fg='Black', font=('Tahoma', 24, 'bold'))
+        self.label.place(x=245, y=35, width=150, height=60)
 
-        self.name = Label(self.frame, text='Enter User_Name: ', bg='Orange', font=('Arial', 18, 'bold'))
+        self.name = Label(self.frame, text='Username:', bg='#D2B48C', fg= 'White', font=('Tahoma', 17, 'bold'))
+        self.name.place(x=240, y=123, width=150, height=30)
 
         self.namee_text = StringVar()
-        self.namee = Entry(self.frame, textvariable=self.namee_text, fg='gray', width=25, font=('Arial', 16, 'bold'))
+        self.namee = Entry(self.frame, textvariable=self.namee_text, fg='gray', width=25, font=('Tahoma', 16, 'bold'))
+        self.namee.place(x=215, y=161, width=200, height=30)
 
-        self.password1 = Label(self.frame, text='Enter Password : ', bg='Orange', fg='Green',
-                                font=('Arial', 18, 'bold'))
+        self.password1 = Label(self.frame, text='Password :', bg='#D2B48C', fg='White',
+                                font=('Tahoma', 17, 'bold'))
+        self.password1.place(x=240, y=199, width=150, height=30)
 
         self.password1e_text = StringVar()
         self.password1e = Entry(self.frame, textvariable=self.password1e_text, bg='White', fg='gray', width=25,
                                  font=('Arial', 16, 'bold'), show='*')
+        self.password1e.place(x=215, y=238, width=200, height=30)
 
-        self.buttonlogin = Button(self.frame, text='LOG IN', bg='gray', fg='gray12', font=('Georgia', 18, 'bold'),
+        self.buttonlogin = Button(self.frame, text='LOGIN', bg='#6e93b0', fg='Black', font=('Tahoma', 18, 'bold'),
                                    cursor='hand2', command=self.login_admin)
+        self.buttonlogin.place(x=60, y=300, width=200, height=50)
 
-        self.label.place(x=40, y=40, width=200, height=80)
-
-        self.name.place(x=100, y=140, width=240, height=60)
-
-        self.namee.place(x=380, y=150, width=200, height=30)
-
-        self.password1.place(x=85, y=220, width=240, height=30)
-
-        self.password1e.place(x=380, y=215, width=200, height=30)
-
-        self.buttonlogin.place(x=180, y=300, width=140, height=50)
-
-        self.frame.pack()
+        self.buttonregister = Button(self.frame, text='REGISTER', bg='#6e93b0', fg='Black', font=('Tahoma', 18, 'bold'),
+                                   cursor='hand2', command=self.registerfn)
+        self.buttonregister.place(x=360, y=300, width=200, height=50)
 
 def openLMSMenu(master):
-    # Create an instance of MenuWindow
     menu_window = Toplevel(master)
     menu_window.title("Menu")
     menu_window.geometry("400x300")
-
-    # Instantiate the MenuWindow class
     menu = MenuWindow(menu_window)
 
 if __name__ == "__main__":
     window = Tk()
-    window.geometry("800x600")
-    window.title("Login Window")
+    window.geometry("625x400")
+    window.title("Earl's Library Login")
+    window.iconbitmap('Library Manager//icon.ico')
 
     login_window = Login(window)
     login_window.loginfn()
+
+    window.protocol("WM_DELETE_WINDOW", login_window.close_window)
 
     window.mainloop()
