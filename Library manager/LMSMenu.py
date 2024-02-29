@@ -14,6 +14,7 @@ class MenuWindow:
         self.create_gui()
 
     def create_top_frame(self):
+        
         # Top frame for displaying title and time/date
         self.topFrame = Frame(self.master, width=1350, height=70, bg="#e1f8dc", padx=20, relief=SUNKEN, borderwidth=1)
         self.topFrame.pack(side=TOP, fill=X)
@@ -128,10 +129,12 @@ class MenuWindow:
         frameTotalAuthors.pack(side=RIGHT, anchor=NW, padx=20, pady=20)
 
         # Counting the number of unique authors
-        authors = set()
+        authors = set()  # Initializes an empty set to store unique authors
+        #Iterate through each book in the data dictionary
         for book in self.data.values():
-            authors.add(book['author'])
-        totalAuthors = len(authors)
+                authors.add(book['author'])  # Adds the author of each book to the set of authors
+
+        totalAuthors = len(authors)  # Calculates the total number of unique authors by getting the length of the set
 
         # Label for displaying total number of authors
         totalAuthorsBox = Label (frameTotalAuthors, text=f" Total Authors: {totalAuthors}", bg='#f9ba8e', width=15, height=3, font=('Trebuchet MS', 20, 'bold'))
