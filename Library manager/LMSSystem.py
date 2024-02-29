@@ -1,120 +1,128 @@
-from tkinter import *
-from tkinter import messagebox
-from LMSMenu import MenuWindow
-from LMSLogin import Login
-import datetime
-import json
-import cv2
+from tkinter import *  # Import everything from the tkinter module
+from tkinter import messagebox  # Import messagebox from tkinter
+from LMSMenu import MenuWindow  # Import MenuWindow class from LMSMenu module
+from LMSLogin import Login  # Import Login class from LMSLogin module
+import datetime  # Import datetime module
+import json  # Import json module
+import cv2  # Import cv2 module from OpenCV library
 
+# Define a class named Library
 class Library:
     def __init__(self):
         try:
-            with open('library_data.json', 'r') as file:
-                self.books = json.load(file)
+            with open('library_data.json', 'r') as file:  # Try to open 'library_data.json' file in read mode
+                self.books = json.load(file)  # Load data from file into self.books
         except FileNotFoundError:
-            self.books = {}
+            self.books = {}  # If file not found, initialize an empty dictionary
 
+    # Method to save the database to 'library_data.json' file
     def save_database(self):
-        with open('library_data.json', 'w') as file:
-            json.dump(self.books, file, indent=4)
+        with open('library_data.json', 'w') as file:  # Open 'library_data.json' file in write mode
+            json.dump(self.books, file, indent=4)  # Write data from self.books into file
 
+    # Method to add a new book to the library
     def add_book(self, title, author, book_id):
-        if title not in self.books:
-            self.books[title] = {'author': author, 'book_id': book_id, 'borrower_name': 'N/A', 'available': True}
-            self.save_database()
-            messagebox.showinfo("Success", f"Book '{title}' by {author} added successfully!")
+        if title not in self.books:  # Check if title is not already in books
+            self.books[title] = {'author': author, 'book_id': book_id, 'borrower_name': 'N/A', 'available': True}  # Add book details to self.books
+            self.save_database()  # Save changes to database
+            messagebox.showinfo("Success", f"Book '{title}' by {author} added successfully!")  # Show success message
         else:
-            messagebox.showerror("Error", "Book already exists in the library.")
+            messagebox.showerror("Error", "Book already exists in the library.")  # Show error message if book already exists
 
+    # Method to checkout a book from the library
     def checkout_book(self, title, borrower_name):
-        if title in self.books:
-            if self.books[title]['available']:
-                self.books[title]['available'] = False
-                due_date = datetime.datetime.now() + datetime.timedelta(days=14)  # Due in 14 days
+        if title in self.books:  # Check if title is in books
+            if self.books[title]['available']:  # Check if book is available
+                self.books[title]['available'] = False  # Mark book as unavailable
+                due_date = datetime.datetime.now() + datetime.timedelta(days=14)  # Calculate due date (14 days from now)
                 self.books[title]['due_date'] = due_date.strftime('%Y-%m-%d')  # Store due date as string
                 self.books[title]['borrower_name'] = borrower_name  # Store borrower's name
-                self.save_database()
-                messagebox.showinfo("Success", f"Book '{title}' checked out successfully! Please return by {due_date.strftime('%Y-%m-%d')}.")
+                self.save_database()  # Save changes to database
+                messagebox.showinfo("Success", f"Book '{title}' checked out successfully! Please return by {due_date.strftime('%Y-%m-%d')}.")  # Show success message
             else:
-                messagebox.showerror("Error", "Sorry, this book is currently checked out.")
+                messagebox.showerror("Error", "Sorry, this book is currently checked out.")  # Show error message if book is already checked out
         else:
-            messagebox.showerror("Error", "Book not found in the library.")
+            messagebox.showerror("Error", "Book not found in the library.")  # Show error message if book not found
 
+    # Method to return a book to the library
     def return_book(self, title):
-        if title in self.books:
-            if not self.books[title]['available']:
-                self.books[title]['available'] = True
-                self.books[title].pop('due_date', None)
-                self.books[title]['borrower_name'] = 'N/A'
-                self.save_database()
-                messagebox.showinfo("Success", f"Book '{title}' returned successfully!")
+        if title in self.books:  # Check if title is in books
+            if not self.books[title]['available']:  # Check if book is not available (i.e., checked out)
+                self.books[title]['available'] = True  # Mark book as available
+                self.books[title].pop('due_date', None)  # Remove due date
+                self.books[title]['borrower_name'] = 'N/A'  # Reset borrower's name
+                self.save_database()  # Save changes to database
+                messagebox.showinfo("Success", f"Book '{title}' returned successfully!")  # Show success message
 
+                # Check if book is overdue and display overdue fine if applicable
                 if self.is_overdue(title):
                     messagebox.showinfo("Overdue Fine", f"You have an overdue fine of ${self.calculate_fine(title)} for book '{title}'.")
             else:
-                messagebox.showerror("Error", "This book is not checked out.")
+                messagebox.showerror("Error", "This book is not checked out.")  # Show error message if book is not checked out
         else:
-            messagebox.showerror("Error", "Book not found in the library.")
+            messagebox.showerror("Error", "Book not found in the library.")  # Show error message if book not found
 
+    # Method to check if a book is overdue
     def is_overdue(self, title):
-        if title in self.books and 'due_date' in self.books[title]:
-            due_date = datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')
-            return datetime.datetime.now() > due_date
-        return False
+        if title in self.books and 'due_date' in self.books[title]:  # Check if title is in books and if 'due_date' is present
+            due_date = datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')  # Convert due date string to datetime object
+            return datetime.datetime.now() > due_date  # Return True if current date is greater than due date, else False
+        return False  # Return False if title not in books or 'due_date' not present
 
+    # Method to calculate overdue fine for a book
     def calculate_fine(self, title):
-        if self.is_overdue(title):
-            days_overdue = (datetime.datetime.now() - datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')).days
-            return 0.5 * days_overdue
-        return 0
+        if self.is_overdue(title):  # Check if book is overdue
+            days_overdue = (datetime.datetime.now() - datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')).days  # Calculate number of days overdue
+            return 0.5 * days_overdue  # Calculate fine (0.5 dollars per day overdue)
+        return 0  # If book is not overdue, return 0 fine
+
+    # Method to remove a book from the library
     def remove_book(self, title):
-        if title in self.books:
-            del self.books[title]
-            self.save_database()
-            messagebox.showinfo("Success", f"Book '{title}' removed successfully!")
+        if title in self.books:  # Check if title is in books
+            del self.books[title]  # Delete book entry from self.books
+            self.save_database()  # Save changes to database
+            messagebox.showinfo("Success", f"Book '{title}' removed successfully!")  # Show success message
         else:
-            messagebox.showerror("Error", "Book not found in the library.")
+            messagebox.showerror("Error", "Book not found in the library.")  # Show error message if book not found
 
+    # Method to display all books in the library
     def display_all_books(self):
-        if self.books:
+        if self.books:  # Check if there are books in the library
+            # Create a formatted string with details of all books and display in a message box
             book_list = "\n".join([f"{title} by {details['author']} ({'Available' if details['available'] else 'Checked out'})" for title, details in self.books.items()])
-            messagebox.showinfo("All Books", "All Books:\n" + book_list)
+            messagebox.showinfo("All Books", "All Books:\n" + book_list)  # Show all books in a message box
         else:
-            messagebox.showinfo("No Books", "No books in the library.")
+            messagebox.showinfo("No Books", "No books in the library.")  # Show message if there are no books in the library
 
+    # Method to check for and display overdue books along with associated fines
     def check_overdue_books(self):
-        today = datetime.datetime.now()
-        overdue_books = []
+        today = datetime.datetime.now()  # Get current date
+        overdue_books = []  # Initialize list to store overdue books
         for title, details in self.books.items():
-            if not details['available'] and datetime.datetime.strptime(details['due_date'], '%Y-%m-%d') < today:
-                overdue_books.append(title)
-        if overdue_books:
+            if not details['available'] and datetime.datetime.strptime(details['due_date'], '%Y-%m-%d') < today:  # Check if book is checked out and due date has passed
+                overdue_books.append(title)  # Add title of overdue book to list
+        if overdue_books:  # If there are overdue books
+            # Display list of overdue books in a message box
             messagebox.showinfo("Overdue Books", "The following books are overdue:\n" + "\n".join(overdue_books))
+            # Display overdue fines for each overdue book in a separate message box
             for title in overdue_books:
-                fine = self.calculate_fine(title)
-                borrower_name = self.books[title]['borrower_name']
-                messagebox.showinfo(f"Overdue Fine for {borrower_name}", f"You have an overdue fine of ${fine} for book '{title}'.")
+                fine = self.calculate_fine(title)  # Calculate fine for overdue book
+                borrower_name = self.books[title]['borrower_name']  # Get borrower's name for overdue book
+                messagebox.showinfo(f"Overdue Fine for {borrower_name}", f"You have an overdue fine of ${fine} for book '{title}'.")  # Show overdue fine message
         else:
-            messagebox.showinfo("No Overdue Books", "No books are currently overdue.")
+            messagebox.showinfo("No Overdue Books", "No books are currently overdue.")  # Show message if there are no overdue books
 
-def populate_listbox():
-    listbox_books.delete(0, END)  # Clear the listbox
-
-    # Format the book information and insert into the listbox
-    for title, details in library.books.items():
-        book_info = f"{title:<40} | {details['book_id']:<40} | {details['author']:<40}"
-        listbox_books.insert(END, book_info)
-
+# Function to handle adding a new book to the library
 def add_book_callback():
     title = entry_BookTitle.get()
     author = entryAuthor.get()
     book_id = entryID.get()
     if title and author and book_id:
         library.add_book(title, author, book_id)
-        populate_listbox()  # Update the listbox after adding a new book
     else:
         messagebox.showerror("Error", "Please enter all fields: title, author, and book ID.")
 
+# Function to handle checking out a book from the library
 def checkout_book_callback():
     title = entry_BookTitle.get()
     borrower_name = entry_BorrowerName.get()  # Fetch borrower name from the correct entry field
@@ -123,6 +131,7 @@ def checkout_book_callback():
     else:
         messagebox.showerror("Error", "Please enter the title of the book and borrower name.")
 
+# Function to handle returning a book to the library
 def return_book_callback():
     title = entry_BookTitle.get()
     if title:
@@ -130,17 +139,18 @@ def return_book_callback():
     else:
         messagebox.showerror("Error", "Please enter the title of the book.")
 
+# Function to handle removing a book from the library
 def remove_book_callback():
     title = entry_BookTitle.get()
     if title:
         library.remove_book(title)
-        populate_listbox()  # Update the listbox after removing a book
     else:
         messagebox.showerror("Error", "Please enter the title of the book to remove.")
 
 # Add a Boolean variable to track the visibility of the listbox
 is_listbox_visible = False
 
+# Function to display all books in the library
 def display_all_books_callback():
     global is_listbox_visible
     if is_listbox_visible:
@@ -155,11 +165,14 @@ def display_all_books_callback():
         hscrollbar.place(x=0, rely=1, relwidth=1)  # Show the hscrollbar at the original position
         is_listbox_visible = True
 
+# Function to check for and display overdue books along with associated fines
 def check_overdue_books_callback():
     library.check_overdue_books()
 
+# Initialize an instance of the Library class
 library = Library()
 
+# Function to open the main menu window
 def openLMSMenu(master):
     # Create an instance of MenuWindow
     menu_window = Toplevel(master)
@@ -169,12 +182,13 @@ def openLMSMenu(master):
     # Instantiate the MenuWindow class
     menu = MenuWindow(menu_window)
 
+# Function to handle backend login operations
 def loginBackend(login_window):
     # Initialize the Login object
     login = Login(login_window)
     login.loginfn()
 
-
+# Function to populate the listbox with sorted book information by book ID
 def populate_listbox_sort_by_id():
     listbox_books.delete(0, END)  # Clear the listbox
     # Sort the books by book ID
@@ -186,17 +200,19 @@ def populate_listbox_sort_by_id():
         book_info = f"Title: {title.ljust(30)} | Author: {details['author'].ljust(24)} | Book ID: {details['book_id'].ljust(15)} | Borrower Name: {borrower_name.ljust(8)} | Status: {'Available' if details['available'] else 'Checked Out'}"
         listbox_books.insert(END, book_info)
 
+# Function to calculate the fine for an overdue book
 def calculate_fine(self, title):
     if self.is_overdue(title):
         days_overdue = (datetime.datetime.now() - datetime.datetime.strptime(self.books[title]['due_date'], '%Y-%m-%d')).days
         return 1.5 * days_overdue
     return 0
 
+# The main function to run the program
 def main():
     # Create a new Tkinter window for login
     login_window = Tk()
-    login_window.geometry("800x600")
-    login_window.title("Login Window")
+    login_window.geometry("625x400")
+    login_window.title("Log in for Earl's Library System")
 
     # Run the login window
     loginBackend(login_window)
@@ -302,14 +318,14 @@ DisplayAllBooksbutton.pack(fill=BOTH, expand=True)
 MenuButton = Button(frameButton7, text="  Menu", font=('Trebuchet MS', 20 , 'bold'), fg='white', command=lambda: openLMSMenu(m_window), bg="#aab396", height=55, width=320, image=menu_photo_image, compound=LEFT, relief=RAISED, anchor='w')
 MenuButton.pack(fill=BOTH, expand=True)
 
-# Frames
+####################################### FRAMES IN RIGHT SIDE
 frameRight = Frame(m_window, bg='#CBB889', width=90, height=150 , padx=15, pady= 10)
 frameRight.pack(side=RIGHT, anchor=NE, padx=15, pady=20)
 
 ABFrame = Frame(m_window, bg='#f3e9dc', width=845, height=320 ,padx= 10, pady= 10, borderwidth=2)
 ABFrame.place(relx=1.0, rely=1.0, x=-860, y=-425)
 
-# Labels and entries
+###################################### LABELS AND ENTRIES FOR FRAME RIGHT ######################################
 label_BookID = Label(frameRight, bg='#b58567', fg='white', height=1, width= 12, text="Book ID:", font= ('Helvetica', 15,'bold'), padx=5, pady=7, relief=RAISED)
 label_BookID.grid(row=0,column=0)
 
@@ -341,19 +357,15 @@ entry_BorrowerName.grid(row=0,column=1, padx=20, pady=20)
 #########################LIST#####################
 listbox_books = Listbox(ABFrame, width=90, height=15, font=('Courier New', 11))
 
-
 ####################### SCROLLBAR #######################
 # Vertical scrollbar
 scrollbar = Scrollbar(ABFrame, orient=VERTICAL)
 scrollbar.config(command=listbox_books.yview)
 
-
 # Horizontal scrollbar
 hscrollbar = Scrollbar(ABFrame, orient=HORIZONTAL)
 hscrollbar.config(command=listbox_books.xview)
 
-
 listbox_books.config(yscrollcommand=scrollbar.set, xscrollcommand=hscrollbar.set)
-
 
 m_window.mainloop()
